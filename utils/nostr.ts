@@ -1,6 +1,18 @@
 import { SimplePool } from "nostr-tools/pool";
 import * as nip19 from "nostr-tools/nip19";
-import { NostrEvent } from "nostr-tools/lib/types/core";
+
+const verifiedSymbol = Symbol("verified");
+
+export interface NostrEvent {
+  kind: number;
+  tags: string[][];
+  content: string;
+  created_at: number;
+  pubkey: string;
+  id: string;
+  sig: string;
+  [verifiedSymbol]?: boolean;
+}
 
 type Filter = {
   ids?: string[];

@@ -4,10 +4,10 @@ import {
   findEvent,
   getRelayListMetadata,
   getUserProfileAndRelayListMetadata,
+  NostrEvent,
 } from "@/utils";
 import * as nip57 from "nostr-tools/nip57";
 import { finalizeEvent, generateSecretKey } from "nostr-tools/pure";
-import { NostrEvent } from "nostr-tools/lib/types/core";
 
 interface Response {
   routes: [];
