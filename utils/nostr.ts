@@ -45,7 +45,10 @@ export const findOneFromRelays = async (relays: string[], filter: Filter) => {
   try {
     pool = new SimplePool();
 
-    return await pool.get([...relays, ...DEFAULT_RELAYS], filter);
+    return await pool.get(
+      Array.from(new Set([...relays, ...DEFAULT_RELAYS])),
+      filter,
+    );
   } catch (error) {
     return error instanceof Error ? error.message : "Something went wrong :(";
   } finally {
@@ -59,17 +62,11 @@ export const findOneFromRelays = async (relays: string[], filter: Filter) => {
   }
 };
 
-export const getUserProfile = (
-  pubkey: string,
-  relays: string[] = DEFAULT_RELAYS,
-) =>
-  findOneFromRelays(
-    Array.from(new Set([...DEFAULT_RELAYS, ...relays, "wss://purplepag.es"])),
-    {
-      authors: [pubkey],
-      kinds: [0],
-    },
-  );
+export const getUserProfile = (pubkey: string, relays: string[]) =>
+  findOneFromRelays([...relays, "wss://purplepag.es"], {
+    authors: [pubkey],
+    kinds: [0],
+  });
 
 export const findEvent = (relays: string[], id: string) => {
   if (is32ByteHex(id)) {
