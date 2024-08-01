@@ -1,7 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { DEFAULT_RELAYS, findEvent, getUserProfile } from "@/utils";
+import {
+  DEFAULT_RELAYS,
+  findEvent,
+  getRelayListMetadata,
+  getUserProfileAndRelayListMetadata,
+} from "@/utils";
 import * as nip57 from "nostr-tools/nip57";
 import { finalizeEvent, generateSecretKey } from "nostr-tools/pure";
+import { NostrEvent } from "nostr-tools/lib/types/core";
 
 interface Response {
   routes: [];
@@ -20,15 +26,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Success | Error>,
 ) {
-  const normalizeRelays = (relay?: string | string[]) => {
-    if (!relay) {
-      return [];
-    }
-
-    return (Array.isArray(relay) ? relay : relay.split(",")).map(
-      decodeURIComponent,
-    );
-  };
   const normalizeId = (id?: string | string[]) => {
     if (!id || Array.isArray(id)) {
       throw new Error("There must be one and only one id.");
@@ -50,23 +47,47 @@ export default async function handler(
 
     return comment;
   };
+  const getProfileMetadataAndWriteRelays = async (
+    event: NostrEvent,
+    isProfileZap: boolean,
+  ) => {
+    let profileMetadataEvent = null;
+    let relayListMetadataEvent = null;
+
+    if (isProfileZap) {
+      profileMetadataEvent = event;
+      relayListMetadataEvent = await getRelayListMetadata(event.pubkey);
+    } else {
+      const metadataEvents = await getUserProfileAndRelayListMetadata(
+        event.pubkey,
+      );
+
+      profileMetadataEvent = metadataEvents.find(({ kind }) => kind === 0);
+      relayListMetadataEvent = metadataEvents.find(
+        ({ kind }) => kind === 10002,
+      );
+    }
+
+    const writeRelays = (relayListMetadataEvent ?? []).tags
+      .filter(([_, relayUri, type]) => type !== "read")
+      .map(([_, relayUri]) => relayUri);
+
+    return { profileMetadataEvent, writeRelays };
+  };
   const fetchInvoice = async ({
     id,
     amount,
     comment,
-    relays,
   }: {
     id: string;
     amount: number;
     comment: string;
-    relays: string[];
   }) => {
     try {
-      const event = await findEvent(relays, id);
+      const event = await findEvent(id);
       const isProfileZap = event.kind === 0;
-      const profileMetadataEvent = isProfileZap
-        ? event
-        : await getUserProfile(event.pubkey, relays);
+      const { profileMetadataEvent, writeRelays } =
+        await getProfileMetadataAndWriteRelays(event, isProfileZap);
 
       if (!profileMetadataEvent) {
         throw new Error("Kind 0 (nostr profile metadata) event not found.");
@@ -83,7 +104,7 @@ export default async function handler(
         event: isProfileZap ? null : event.id,
         amount,
         comment,
-        relays: relays.length === 0 ? DEFAULT_RELAYS : relays,
+        relays: writeRelays.length === 0 ? DEFAULT_RELAYS : writeRelays,
       });
 
       // @ts-ignore
@@ -120,7 +141,6 @@ export default async function handler(
           id: normalizeId(req.query.id),
           amount: normalizeAmount(req.query.amount),
           comment: normalizeComment(req.query.comment),
-          relays: normalizeRelays(req.query.relay),
         });
       } catch (err) {
         result = err instanceof Error ? err.message : "Something went wrong :(";

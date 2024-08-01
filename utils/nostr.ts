@@ -1,5 +1,6 @@
 import { SimplePool } from "nostr-tools/pool";
 import * as nip19 from "nostr-tools/nip19";
+import { NostrEvent } from "nostr-tools/lib/types/core";
 
 type Filter = {
   ids?: string[];
@@ -21,7 +22,7 @@ export const DEFAULT_RELAYS = [
 
 export const is32ByteHex = (str) => /^[0-9a-fA-F]{64}$/.test(str);
 
-export const findOneFromRelays = async (relays: string[], filter: Filter) => {
+const findOneFromRelays = async (relays: string[], filter: Filter) => {
   let pool;
 
   try {
@@ -44,13 +45,51 @@ export const findOneFromRelays = async (relays: string[], filter: Filter) => {
   }
 };
 
-export const getUserProfile = (pubkey: string, relays: string[]) =>
+const findFromRelays = async (
+  relays: string[],
+  filter: Filter,
+): Promise<NostrEvent[]> => {
+  let pool;
+
+  try {
+    pool = new SimplePool();
+
+    return await pool.querySync(
+      Array.from(new Set([...relays, ...DEFAULT_RELAYS])),
+      filter,
+    );
+  } catch (error) {
+    return error instanceof Error ? error.message : "Something went wrong :(";
+  } finally {
+    if (pool) {
+      try {
+        pool.close(relays);
+      } catch {
+        // fail silently for errors that happen when closing the pool
+      }
+    }
+  }
+};
+
+export const getUserProfile = (pubkey: string, relays?: string[]) =>
   findOneFromRelays([...relays, "wss://purplepag.es"], {
     authors: [pubkey],
     kinds: [0],
   });
 
-export const findEvent = (relays: string[], id: string) => {
+export const getRelayListMetadata = (pubkey) =>
+  findOneFromRelays(["wss://purplepag.es"], {
+    authors: [pubkey],
+    kinds: [10002],
+  });
+
+export const getUserProfileAndRelayListMetadata = (pubkey) =>
+  findFromRelays(["wss://purplepag.es"], {
+    authors: [pubkey],
+    kinds: [0, 10002],
+  });
+
+export const findEvent = (id: string, relays = DEFAULT_RELAYS) => {
   if (is32ByteHex(id)) {
     return findOneFromRelays(relays, {
       ids: [id],
