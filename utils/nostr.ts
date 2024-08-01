@@ -76,7 +76,6 @@ export const findEvent = (relays: string[], id: string) => {
   }
 
   const { type, data } = nip19.decode(id);
-  console.log({ type, data });
 
   switch (type) {
     case "npub":
