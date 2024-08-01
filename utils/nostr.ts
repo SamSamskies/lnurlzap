@@ -21,24 +21,6 @@ export const DEFAULT_RELAYS = [
 
 export const is32ByteHex = (str) => /^[0-9a-fA-F]{64}$/.test(str);
 
-const normalizeUserId = (userId: string) => {
-  if (is32ByteHex(userId)) {
-    return userId;
-  }
-
-  const { type, data } = nip19.decode(userId);
-
-  switch (type) {
-    case "npub":
-      return data;
-    case "nprofile":
-      // @ts-ignore
-      return data.pubkey;
-    default:
-      throw new Error("invalid nip-19 entity");
-  }
-};
-
 export const findOneFromRelays = async (relays: string[], filter: Filter) => {
   let pool;
 
