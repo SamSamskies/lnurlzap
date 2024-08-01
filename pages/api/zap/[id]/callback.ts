@@ -52,7 +52,7 @@ export default async function handler(
     isProfileZap: boolean,
   ) => {
     let profileMetadataEvent = null;
-    let relayListMetadataEvent = null;
+    let relayListMetadataEvent: NostrEvent | null | undefined = null;
 
     if (isProfileZap) {
       profileMetadataEvent = event;
@@ -68,6 +68,7 @@ export default async function handler(
       );
     }
 
+    // @ts-ignore
     const writeRelays = (relayListMetadataEvent ?? []).tags
       .filter(([_, relayUri, type]) => type !== "read")
       .map(([_, relayUri]) => relayUri);
