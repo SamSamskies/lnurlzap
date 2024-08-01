@@ -71,7 +71,7 @@ const findFromRelays = async (
   }
 };
 
-export const getUserProfile = (pubkey: string, relays?: string[]) =>
+export const getUserProfile = (pubkey: string, relays = DEFAULT_RELAYS) =>
   findOneFromRelays([...relays, "wss://purplepag.es"], {
     authors: [pubkey],
     kinds: [0],
@@ -129,4 +129,12 @@ export const findEvent = (id: string, relays = DEFAULT_RELAYS) => {
     default:
       throw new Error("invalid nip-19 entity");
   }
+};
+
+export const extractLnurlOrLightningAddress = (
+  profileMetadataEvent: NostrEvent,
+) => {
+  const { lud06, lud16 } = JSON.parse(profileMetadataEvent.content);
+
+  return lud16 || lud06;
 };
