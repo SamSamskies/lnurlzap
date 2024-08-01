@@ -3,7 +3,7 @@ import * as nip19 from "nostr-tools/nip19";
 
 const verifiedSymbol = Symbol("verified");
 
-export interface NostrEvent {
+export interface Event {
   kind: number;
   tags: string[][];
   content: string;
@@ -32,9 +32,12 @@ export const DEFAULT_RELAYS = [
   "wss://nos.lol",
 ];
 
-export const is32ByteHex = (str) => /^[0-9a-fA-F]{64}$/.test(str);
+export const is32ByteHex = (str: string) => /^[0-9a-fA-F]{64}$/.test(str);
 
-const findOneFromRelays = async (relays: string[], filter: Filter) => {
+const findOneFromRelays = async (
+  relays: string[],
+  filter: Filter,
+): Promise<Event | null> => {
   let pool;
 
   try {
@@ -45,7 +48,9 @@ const findOneFromRelays = async (relays: string[], filter: Filter) => {
       filter,
     );
   } catch (error) {
-    return error instanceof Error ? error.message : "Something went wrong :(";
+    throw new Error(
+      error instanceof Error ? error.message : "Something went wrong :(",
+    );
   } finally {
     if (pool) {
       try {
@@ -60,7 +65,7 @@ const findOneFromRelays = async (relays: string[], filter: Filter) => {
 const findFromRelays = async (
   relays: string[],
   filter: Filter,
-): Promise<NostrEvent[]> => {
+): Promise<Event[]> => {
   let pool;
 
   try {
@@ -71,7 +76,9 @@ const findFromRelays = async (
       filter,
     );
   } catch (error) {
-    return error instanceof Error ? error.message : "Something went wrong :(";
+    throw new Error(
+      error instanceof Error ? error.message : "Something went wrong :(",
+    );
   } finally {
     if (pool) {
       try {
@@ -89,13 +96,13 @@ export const getUserProfile = (pubkey: string, relays = DEFAULT_RELAYS) =>
     kinds: [0],
   });
 
-export const getRelayListMetadata = (pubkey) =>
+export const getRelayListMetadata = (pubkey: string) =>
   findOneFromRelays(["wss://purplepag.es"], {
     authors: [pubkey],
     kinds: [10002],
   });
 
-export const getUserProfileAndRelayListMetadata = (pubkey) =>
+export const getUserProfileAndRelayListMetadata = (pubkey: string) =>
   findFromRelays(["wss://purplepag.es"], {
     authors: [pubkey],
     kinds: [0, 10002],
@@ -116,7 +123,7 @@ export const findEvent = (id: string, relays = DEFAULT_RELAYS) => {
     case "nprofile":
       return getUserProfile((data as nip19.ProfilePointer).pubkey, [
         ...relays,
-        ...(data as nip19.ProfilePointer).relays,
+        ...((data as nip19.ProfilePointer).relays ?? []),
       ]);
     case "note":
       return findOneFromRelays(relays, {
@@ -124,14 +131,14 @@ export const findEvent = (id: string, relays = DEFAULT_RELAYS) => {
       });
     case "nevent":
       return findOneFromRelays(
-        [...relays, ...(data as nip19.EventPointer).relays],
+        [...relays, ...((data as nip19.EventPointer).relays ?? [])],
         {
           ids: [(data as nip19.EventPointer).id],
         },
       );
     case "naddr":
       return findOneFromRelays(
-        [...relays, ...(data as nip19.AddressPointer).relays],
+        [...relays, ...((data as nip19.AddressPointer).relays ?? [])],
         {
           authors: [(data as nip19.AddressPointer).pubkey],
           kinds: [(data as nip19.AddressPointer).kind],
@@ -143,9 +150,7 @@ export const findEvent = (id: string, relays = DEFAULT_RELAYS) => {
   }
 };
 
-export const extractLnurlOrLightningAddress = (
-  profileMetadataEvent: NostrEvent,
-) => {
+export const extractLnurlOrLightningAddress = (profileMetadataEvent: Event) => {
   const { lud06, lud16 } = JSON.parse(profileMetadataEvent.content);
 
   return lud16 || lud06;

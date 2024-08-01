@@ -4,27 +4,14 @@ import {
   findEvent,
   getRelayListMetadata,
   getUserProfileAndRelayListMetadata,
-  NostrEvent,
+  Event,
 } from "@/utils";
 import * as nip57 from "nostr-tools/nip57";
 import { finalizeEvent, generateSecretKey } from "nostr-tools/pure";
 
-interface Response {
-  routes: [];
-  [key: string]: any;
-}
-
-interface Success extends Response {
-  pr: string;
-}
-
-interface Error extends Response {
-  status: "ERROR";
-}
-
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Success | Error>,
+  res: NextApiResponse,
 ) {
   const normalizeId = (id?: string | string[]) => {
     if (!id || Array.isArray(id)) {
@@ -48,11 +35,11 @@ export default async function handler(
     return comment;
   };
   const getProfileMetadataAndWriteRelays = async (
-    event: NostrEvent,
+    event: Event,
     isProfileZap: boolean,
   ) => {
     let profileMetadataEvent = null;
-    let relayListMetadataEvent: NostrEvent | null | undefined = null;
+    let relayListMetadataEvent = null;
 
     if (isProfileZap) {
       profileMetadataEvent = event;
@@ -68,10 +55,11 @@ export default async function handler(
       );
     }
 
-    // @ts-ignore
-    const writeRelays = (relayListMetadataEvent ?? []).tags
-      .filter(([_, relayUri, type]) => type !== "read")
-      .map(([_, relayUri]) => relayUri);
+    const writeRelays = relayListMetadataEvent
+      ? (relayListMetadataEvent as Event).tags
+          .filter(([_, __, type]) => type !== "read")
+          .map(([_, relayUri]) => relayUri)
+      : [];
 
     return { profileMetadataEvent, writeRelays };
   };
@@ -86,6 +74,11 @@ export default async function handler(
   }) => {
     try {
       const event = await findEvent(id);
+
+      if (!event) {
+        throw new Error(`Event with ID ${id} not found.`);
+      }
+
       const isProfileZap = event.kind === 0;
       const { profileMetadataEvent, writeRelays } =
         await getProfileMetadataAndWriteRelays(event, isProfileZap);
@@ -100,6 +93,7 @@ export default async function handler(
         throw new Error("No lightning address or LNURL found for user.");
       }
 
+      // @ts-ignore
       const zapRequestEvent = nip57.makeZapRequest({
         profile: profileMetadataEvent.pubkey,
         event: isProfileZap ? null : event.id,

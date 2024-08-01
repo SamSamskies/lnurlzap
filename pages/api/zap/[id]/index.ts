@@ -6,22 +6,9 @@ import {
   getUserProfile,
 } from "@/utils";
 
-interface Response {
-  routes: [];
-  [key: string]: any;
-}
-
-interface Success extends Response {
-  pr: string;
-}
-
-interface Error extends Response {
-  status: "ERROR";
-}
-
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Success | Error>,
+  res: NextApiResponse,
 ) {
   const normalizeId = (id?: string | string[]) => {
     if (!id || Array.isArray(id)) {
@@ -33,6 +20,11 @@ export default async function handler(
   const fetchLnurlServiceParams = async (id: string) => {
     try {
       const event = await findEvent(id);
+
+      if (!event) {
+        throw new Error(`Event with ID ${id} not found.`);
+      }
+
       const isProfileZap = event.kind === 0;
       const profileMetadataEvent = isProfileZap
         ? event
@@ -50,7 +42,6 @@ export default async function handler(
           "User does not have a lightning address or LNURL in their Nostr profile.",
         );
       }
-      console.log(lnUrlOrAddress);
 
       const { rawData } = await requestPayServiceParams({
         lnUrlOrAddress,
