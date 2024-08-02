@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@vercel/kv": "^2.0.0",
+    "@vercel/og": "^0.6.2",
     "lnurl-pay": "^3.0.1",
     "next": "14.2.5",
     "nostr-tools": "^2.7.1",

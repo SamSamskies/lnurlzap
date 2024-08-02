@@ -239,3 +239,6 @@ export const isRegularEvent = (event: Event) => {
     (kind >= 1000 && kind < 10000)
   );
 };
+
+export const truncateId = (id: string) =>
+  `${id.substring(0, 12)}...${id.substring(id.length - 12)}`;
