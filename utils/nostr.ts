@@ -1,6 +1,7 @@
 import { SimplePool } from "nostr-tools/pool";
 import * as nip19 from "nostr-tools/nip19";
 import { LiveEvent } from "nostr-tools/kinds";
+import { cacheEvent, getCachedEvent } from "@/utils/cache";
 
 const verifiedSymbol = Symbol("verified");
 
@@ -109,7 +110,7 @@ export const getUserProfileAndRelayListMetadata = (pubkey: string) =>
     kinds: [0, 10002],
   });
 
-export const findEvent = (id: string, relays = DEFAULT_RELAYS) => {
+export const findEvent = async (id: string, relays = DEFAULT_RELAYS) => {
   if (is32ByteHex(id)) {
     return findOneFromRelays(relays, {
       ids: [id],
@@ -126,17 +127,45 @@ export const findEvent = (id: string, relays = DEFAULT_RELAYS) => {
         ...relays,
         ...((data as nip19.ProfilePointer).relays ?? []),
       ]);
-    case "note":
-      return findOneFromRelays(relays, {
-        ids: [data as string],
+    case "note": {
+      const eventId = data as string;
+      const cachedEvent = await getCachedEvent(eventId);
+
+      if (cachedEvent) {
+        return cachedEvent;
+      }
+
+      const event = await findOneFromRelays(relays, {
+        ids: [eventId],
       });
-    case "nevent":
-      return findOneFromRelays(
+
+      if (event) {
+        cacheEvent(eventId, event);
+      }
+
+      return event;
+    }
+    case "nevent": {
+      const eventId = (data as nip19.EventPointer).id;
+      const cachedEvent = await getCachedEvent(eventId);
+
+      if (cachedEvent) {
+        return cachedEvent;
+      }
+
+      const event = await findOneFromRelays(
         [...relays, ...((data as nip19.EventPointer).relays ?? [])],
         {
-          ids: [(data as nip19.EventPointer).id],
+          ids: [eventId],
         },
       );
+
+      if (event) {
+        cacheEvent(eventId, event);
+      }
+
+      return event;
+    }
     case "naddr":
       return findOneFromRelays(
         [...relays, ...((data as nip19.AddressPointer).relays ?? [])],
@@ -198,4 +227,15 @@ export const getAddressPointer = (id: string) => {
   return type === "naddr"
     ? `${(data as nip19.AddressPointer).kind}:${(data as nip19.AddressPointer).pubkey}:${(data as nip19.AddressPointer).identifier}`
     : null;
+};
+
+export const isRegularEvent = (event: Event) => {
+  const kind = event.kind;
+
+  return (
+    kind === 1 ||
+    kind === 2 ||
+    (kind >= 4 && kind < 45) ||
+    (kind >= 1000 && kind < 10000)
+  );
 };
