@@ -3,10 +3,6 @@ import { GetServerSideProps } from "next";
 
 export { Lnurl as default } from "@/components/Lnurl";
 
-interface PageProps {
-  id: string;
-}
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params as { id: string };
   const normalizedId = id.replace(/^nostr:/, "");
