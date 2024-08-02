@@ -20,7 +20,8 @@ export const Home = () => {
   };
 
   return (
-    <main>
+    <main className={styles.main}>
+      <h1>Generate an LNURL for any Nostr event 🎉</h1>
       <form className={styles.form} onSubmit={handleSubmit}>
         <input
           autoFocus
