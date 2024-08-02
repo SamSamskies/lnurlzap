@@ -10,7 +10,7 @@ const encodeLnurl = (id: string) => {
   return bech32.encode("lnurl", words, 1023).toUpperCase();
 };
 
-export const Lnurl = ({ id, error }) => {
+export const Lnurl = ({ id, error }: { id: string; error: string | null }) => {
   const lnurl = encodeLnurl(id);
 
   return (

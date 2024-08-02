@@ -1,15 +1,15 @@
 import styles from "./Home.module.css";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/router";
 import { validateNostrId } from "@/utils";
 
 export const Home = () => {
   const router = useRouter();
   const [error, setError] = useState("");
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.target;
-    const input = form.elements[0];
+    const form = event.currentTarget;
+    const input = form.elements[0] as HTMLFormElement;
     const id = input.value.trim();
 
     if (validateNostrId(id)) {
