@@ -191,3 +191,11 @@ export const getPubkeyToZap = (event: Event) => {
 
   return event.pubkey;
 };
+
+export const getAddressPointer = (id: string) => {
+  const { type, data } = nip19.decode(id);
+
+  return type === "naddr"
+    ? `${(data as nip19.AddressPointer).kind}:${(data as nip19.AddressPointer).pubkey}:${(data as nip19.AddressPointer).identifier}`
+    : null;
+};

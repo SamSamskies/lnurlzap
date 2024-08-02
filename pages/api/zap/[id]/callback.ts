@@ -6,6 +6,7 @@ import {
   getUserProfileAndRelayListMetadata,
   Event,
   getPubkeyToZap,
+  getAddressPointer,
 } from "@/utils";
 import * as nip57 from "nostr-tools/nip57";
 import { finalizeEvent, generateSecretKey } from "nostr-tools/pure";
@@ -96,10 +97,12 @@ export default async function handler(
         throw new Error("No lightning address or LNURL found for user.");
       }
 
+      const addressPointer = getAddressPointer(id);
+
       // @ts-ignore
       const zapRequestEvent = nip57.makeZapRequest({
         profile: getPubkeyToZap(profileMetadataEvent),
-        event: isProfileZap ? null : event.id,
+        event: isProfileZap || addressPointer ? null : event.id,
         amount,
         comment,
         relays: writeRelays.length === 0 ? DEFAULT_RELAYS : writeRelays,
@@ -107,6 +110,11 @@ export default async function handler(
 
       // @ts-ignore
       zapRequestEvent.tags.push(["anon"]);
+
+      if (addressPointer) {
+        // @ts-ignore
+        zapRequestEvent.tags.push(["a", addressPointer]);
+      }
 
       const signedZapRequestEvent = finalizeEvent(
         zapRequestEvent,
