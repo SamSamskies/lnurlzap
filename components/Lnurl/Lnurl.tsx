@@ -17,10 +17,6 @@ export const Lnurl = ({ id, error }: { id: string; error: string | null }) => {
     <main className={styles.main}>
       {!error && (
         <>
-          <p className={styles.cta}>
-            Scan this QR code with any lightning wallet to zap this Nostr event
-            🎉
-          </p>
           <iframe
             src={`https://njump.me/${id}?embed=yes`}
             className="nostr-embedded"
@@ -29,13 +25,18 @@ export const Lnurl = ({ id, error }: { id: string; error: string | null }) => {
               height: 400,
               border: "2px solid #C9C9C9",
               borderRadius: 10,
+              marginBottom: 20,
             }}
           ></iframe>
+          <p className={styles.cta}>
+            Scan this QR code with any lightning wallet to zap this Nostr event
+            🎉
+          </p>
           <QRCodeSVG
             value={`lightning:${lnurl}`}
             includeMargin
             size={500}
-            style={{ width: "100%", height: "auto", margin: "40px 0" }}
+            style={{ width: "100%", height: "auto" }}
           />
           <p>{lnurl}</p>
         </>

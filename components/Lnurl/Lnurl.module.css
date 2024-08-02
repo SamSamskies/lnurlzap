@@ -1,6 +1,6 @@
 .main {
     max-width: 600px;
-    padding: 60px 40px;
+    padding: 40px;
     overflow-wrap: break-word;
     margin: auto;
 }
@@ -11,5 +11,5 @@
 
 .cta {
     font-weight: bold;
-    font-size: 20px;
+    font-size: 18px;
 }
