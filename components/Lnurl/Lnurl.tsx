@@ -15,16 +15,22 @@ export const Lnurl = ({ id, error }: { id: string; error: string | null }) => {
 
   return (
     <main className={styles.main}>
-      <p className={styles.cta}>
-        Scan this QR code with any lightning wallet to zap Nostr event {id} 🎉
-      </p>
-      <QRCodeSVG
-        value={`lightning:${lnurl}`}
-        includeMargin
-        size={500}
-        style={{ width: "100%", height: "auto", margin: "40px 0" }}
-      />
-      <p>{lnurl}</p>
+      {!error && (
+        <>
+          <p className={styles.cta}>
+            Scan this QR code with any lightning wallet to zap Nostr event {id}{" "}
+            🎉
+          </p>
+          <QRCodeSVG
+            value={`lightning:${lnurl}`}
+            includeMargin
+            size={500}
+            style={{ width: "100%", height: "auto", margin: "40px 0" }}
+          />
+          <p>{lnurl}</p>
+        </>
+      )}
+
       {error && <p className={styles.error}>{error}</p>}
     </main>
   );
