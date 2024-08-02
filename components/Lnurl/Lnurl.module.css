@@ -13,3 +13,21 @@
     font-weight: bold;
     font-size: 18px;
 }
+
+.noteEmbedContainer {
+    position: relative;
+}
+
+.noteQrCodeContainer {
+    position: absolute;
+    top: 16px;
+    right: 4px;
+    opacity: 1;
+    transition: opacity 200ms ease-in-out;
+}
+
+@media (max-width: 679px) {
+    .noteQrCodeContainer {
+        opacity: 0;
+    }
+}
