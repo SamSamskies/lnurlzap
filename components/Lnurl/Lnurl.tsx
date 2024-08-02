@@ -6,7 +6,7 @@ import Head from "next/head";
 export const Lnurl = ({ id, error }: { id: string; error: string | null }) => {
   const lnurl = encodeLnurl(id);
   const description = `Use any lightning wallet to zap ${truncateId(id)}`;
-  const ogImage = `${process.env.NEXT_PUBLIC_LNURLZAP_BASE_URL}/api/${id}`;
+  const ogImage = `${process.env.NEXT_PUBLIC_LNURLZAP_BASE_URL}/api/og/${id}`;
 
   return (
     <>
