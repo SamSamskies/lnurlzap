@@ -18,9 +18,19 @@ export const Lnurl = ({ id, error }: { id: string; error: string | null }) => {
       {!error && (
         <>
           <p className={styles.cta}>
-            Scan this QR code with any lightning wallet to zap Nostr event {id}{" "}
+            Scan this QR code with any lightning wallet to zap this Nostr event
             🎉
           </p>
+          <iframe
+            src={`https://njump.me/${id}?embed=yes`}
+            className="nostr-embedded"
+            style={{
+              width: "100%",
+              height: 400,
+              border: "2px solid #C9C9C9",
+              borderRadius: 10,
+            }}
+          ></iframe>
           <QRCodeSVG
             value={`lightning:${lnurl}`}
             includeMargin
