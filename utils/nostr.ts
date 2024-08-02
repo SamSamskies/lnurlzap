@@ -1,5 +1,6 @@
 import { SimplePool } from "nostr-tools/pool";
 import * as nip19 from "nostr-tools/nip19";
+import { LiveEvent } from "nostr-tools/kinds";
 
 const verifiedSymbol = Symbol("verified");
 
@@ -177,4 +178,18 @@ export const validateNostrId = (id: string) => {
   } catch {
     return false;
   }
+};
+
+export const getPubkeyToZap = (event: Event) => {
+  console.log(event.kind);
+  if (event.kind === LiveEvent) {
+    const hostPubkeyTag = (event.tags ?? []).find(
+      (tag) => tag[0] === "p" && tag[3] === "host",
+    );
+    console.log(hostPubkeyTag);
+
+    return hostPubkeyTag ? hostPubkeyTag[1] : event.pubkey;
+  }
+
+  return event.pubkey;
 };

@@ -5,6 +5,7 @@ import {
   getRelayListMetadata,
   getUserProfileAndRelayListMetadata,
   Event,
+  getPubkeyToZap,
 } from "@/utils";
 import * as nip57 from "nostr-tools/nip57";
 import { finalizeEvent, generateSecretKey } from "nostr-tools/pure";
@@ -28,11 +29,11 @@ export default async function handler(
     return Number(amount);
   };
   const normalizeComment = (comment?: string | string[]) => {
-    if (!comment || Array.isArray(comment)) {
+    if (Array.isArray(comment)) {
       throw new Error("There must be one and only one comment.");
     }
 
-    return comment;
+    return comment ?? "";
   };
   const getProfileMetadataAndWriteRelays = async (
     event: Event,
@@ -43,10 +44,12 @@ export default async function handler(
 
     if (isProfileZap) {
       profileMetadataEvent = event;
-      relayListMetadataEvent = await getRelayListMetadata(event.pubkey);
+      relayListMetadataEvent = await getRelayListMetadata(
+        getPubkeyToZap(event),
+      );
     } else {
       const metadataEvents = await getUserProfileAndRelayListMetadata(
-        event.pubkey,
+        getPubkeyToZap(event),
       );
 
       profileMetadataEvent = metadataEvents.find(({ kind }) => kind === 0);
@@ -95,7 +98,7 @@ export default async function handler(
 
       // @ts-ignore
       const zapRequestEvent = nip57.makeZapRequest({
-        profile: profileMetadataEvent.pubkey,
+        profile: getPubkeyToZap(profileMetadataEvent),
         event: isProfileZap ? null : event.id,
         amount,
         comment,

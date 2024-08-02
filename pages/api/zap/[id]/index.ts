@@ -3,6 +3,7 @@ import { requestPayServiceParams } from "lnurl-pay";
 import {
   extractLnurlOrLightningAddress,
   findEvent,
+  getPubkeyToZap,
   getUserProfile,
 } from "@/utils";
 
@@ -28,7 +29,7 @@ export default async function handler(
       const isProfileZap = event.kind === 0;
       const profileMetadataEvent = isProfileZap
         ? event
-        : await getUserProfile(event.pubkey);
+        : await getUserProfile(getPubkeyToZap(event));
 
       if (!profileMetadataEvent) {
         throw new Error("Kind 0 (nostr profile metadata) event not found.");
