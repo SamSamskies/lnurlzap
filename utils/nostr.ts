@@ -181,12 +181,10 @@ export const validateNostrId = (id: string) => {
 };
 
 export const getPubkeyToZap = (event: Event) => {
-  console.log(event.kind);
   if (event.kind === LiveEvent) {
     const hostPubkeyTag = (event.tags ?? []).find(
       (tag) => tag[0] === "p" && tag[3] === "host",
     );
-    console.log(hostPubkeyTag);
 
     return hostPubkeyTag ? hostPubkeyTag[1] : event.pubkey;
   }
