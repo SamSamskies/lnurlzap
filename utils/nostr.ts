@@ -155,3 +155,26 @@ export const extractLnurlOrLightningAddress = (profileMetadataEvent: Event) => {
 
   return lud16 || lud06;
 };
+
+export const validateNostrId = (id: string) => {
+  if (is32ByteHex(id)) {
+    return true;
+  }
+
+  try {
+    const { type, data } = nip19.decode(id);
+
+    switch (type) {
+      case "npub":
+      case "nprofile":
+      case "note":
+      case "nevent":
+      case "naddr":
+        return true;
+      default:
+        return false;
+    }
+  } catch {
+    return false;
+  }
+};
