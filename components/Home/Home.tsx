@@ -10,7 +10,7 @@ export const Home = () => {
     event.preventDefault();
     const form = event.currentTarget;
     const input = form.elements[0] as HTMLFormElement;
-    const id = input.value.trim();
+    const id = input.value.replace(/^nostr:/, "").trim();
 
     if (validateNostrId(id)) {
       return router.push(`/${id}`);

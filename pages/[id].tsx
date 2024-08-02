@@ -9,11 +9,12 @@ interface PageProps {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params as { id: string };
-  const isValidId = validateNostrId(id);
+  const normalizedId = id.replace(/^nostr:/, "");
+  const isValidId = validateNostrId(normalizedId);
 
   return {
     props: {
-      id,
+      id: normalizedId,
       error: isValidId ? null : `${id} is not a valid Nostr ID.`,
     },
   };
