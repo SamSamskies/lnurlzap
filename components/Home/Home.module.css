@@ -9,6 +9,7 @@
     justify-content: center;
     padding: 16px;
     margin-top: 40px;
+    gap: 10px;
 }
 
 .input {
@@ -16,7 +17,6 @@
     border-radius: 5px;
     border: none;
     font-size: 16px;
-    margin-right: 10px;
     box-shadow: none;
     max-width: 400px;
     flex-grow: 1;
@@ -50,4 +50,14 @@
 
 .error {
     color: red;
+}
+
+@media (max-width: 480px) {
+    .form {
+        flex-direction: column;
+    }
+
+    .input {
+        max-width: 100%;
+    }
 }
