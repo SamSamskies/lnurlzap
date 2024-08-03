@@ -41,6 +41,7 @@ export const Lnurl = ({ id, error }: { id: string; error: string | null }) => {
                     width: 100,
                     height: "auto",
                   }}
+                  asCanvas
                 />
               </div>
             </div>
@@ -52,6 +53,7 @@ export const Lnurl = ({ id, error }: { id: string; error: string | null }) => {
               lnurl={lnurl}
               size={500}
               style={{ width: "100%", height: "auto" }}
+              asCanvas
             />
             <p>{lnurl}</p>
           </>
