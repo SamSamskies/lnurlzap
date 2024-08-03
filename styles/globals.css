@@ -1,11 +1,6 @@
-:root {
-  --background-color: rgb(52, 53, 65);
-  --color: rgb(236, 236, 241);
-}
-
 html {
-  background-color: var(--background-color);
-  color: var(--color);
+  background: linear-gradient(to bottom right, #8e2de2, #4a00e0) fixed;
+  color: rgb(236, 236, 241);
 }
 
 html,
