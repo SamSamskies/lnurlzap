@@ -1,7 +1,7 @@
 import { ImageResponse } from "@vercel/og";
 import type { NextRequest } from "next/server";
 import { encodeLnurl, truncateId } from "@/utils";
-import { LnurlQrCode } from "@/components/LnurlQrCode";
+import { QRCodeSVG } from "qrcode.react";
 
 export const config = {
   runtime: "edge",
@@ -28,7 +28,7 @@ export default async function handler(req: NextRequest) {
           fontWeight: 600,
         }}
       >
-        <LnurlQrCode lnurl={lnurl} size={424} />
+        <QRCodeSVG value={`lightning:${lnurl}`} size={424} includeMargin />
         <div style={{ display: "flex", fontSize: 48, marginTop: 20 }}>
           Scan to zap {truncateId(id)}
         </div>

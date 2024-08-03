@@ -1,5 +1,5 @@
 import styles from "./Lnurl.module.css";
-import { LnurlQrCode } from "@/components/LnurlQrCode";
+import { LnurlQrCodePng } from "@/components/LnurlQrCodePng";
 import { encodeLnurl, truncateId } from "@/utils";
 import Head from "next/head";
 
@@ -34,14 +34,13 @@ export const Lnurl = ({ id, error }: { id: string; error: string | null }) => {
                 }}
               ></iframe>
               <div className={styles.noteQrCodeContainer}>
-                <LnurlQrCode
+                <LnurlQrCodePng
                   lnurl={lnurl}
                   size={100}
                   style={{
                     width: 100,
                     height: "auto",
                   }}
-                  asCanvas
                 />
               </div>
             </div>
@@ -49,11 +48,10 @@ export const Lnurl = ({ id, error }: { id: string; error: string | null }) => {
               Scan this QR code with any lightning wallet to zap this Nostr
               event 🎉
             </p>
-            <LnurlQrCode
+            <LnurlQrCodePng
               lnurl={lnurl}
               size={500}
               style={{ width: "100%", height: "auto" }}
-              asCanvas
             />
             <p>{lnurl}</p>
           </>
