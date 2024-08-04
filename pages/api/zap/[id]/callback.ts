@@ -4,12 +4,12 @@ import {
   findEvent,
   getRelayListMetadata,
   getUserProfileAndRelayListMetadata,
-  Event,
   getPubkeyToZap,
   getAddressPointer,
 } from "@/utils";
 import * as nip57 from "nostr-tools/nip57";
 import { finalizeEvent, generateSecretKey } from "nostr-tools/pure";
+import type { Event } from "nostr-tools/core";
 
 export default async function handler(
   req: NextApiRequest,

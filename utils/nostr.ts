@@ -1,31 +1,9 @@
 import { SimplePool } from "nostr-tools/pool";
 import * as nip19 from "nostr-tools/nip19";
 import { LiveEvent } from "nostr-tools/kinds";
+import type { Event } from "nostr-tools/core";
+import type { Filter } from "nostr-tools/filter";
 import { cacheEvent, getCachedEvent } from "@/utils/cache";
-
-const verifiedSymbol = Symbol("verified");
-
-export interface Event {
-  kind: number;
-  tags: string[][];
-  content: string;
-  created_at: number;
-  pubkey: string;
-  id: string;
-  sig: string;
-  [verifiedSymbol]?: boolean;
-}
-
-type Filter = {
-  ids?: string[];
-  kinds?: number[];
-  authors?: string[];
-  since?: number;
-  until?: number;
-  limit?: number;
-  search?: string;
-  [key: `#${string}`]: string[] | undefined;
-};
 
 export const DEFAULT_RELAYS = [
   "wss://relay.damus.io",

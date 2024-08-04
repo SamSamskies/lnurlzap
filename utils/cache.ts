@@ -1,5 +1,6 @@
 import { kv } from "@vercel/kv";
-import { Event, isRegularEvent } from "./nostr";
+import { isRegularEvent } from "./nostr";
+import type { Event } from "nostr-tools/core";
 
 const eventKeyPrefix = "event:";
 
