@@ -1,6 +1,6 @@
 # LNURL Zap
 
-## API
+## API  (deprecated) - instead use [lnurl-zap package](https://github.com/SamSamskies/lnurl-zap) to generate LNRULS.
 
 GET `/api/lnurl/<NIP19_OR_RAW_HEX_EVENT_ID>` - returns LNURL for the Nostr event. Whenever the LNURL is paid, an anonymous zap receipt is broadcasted to Nostr relays. 
 
