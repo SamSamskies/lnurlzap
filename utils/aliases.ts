@@ -2,6 +2,16 @@ import { verifyEvent } from "nostr-tools/pure";
 import type { Event } from "nostr-tools/core";
 
 const ALIASES: { [key: string]: Event } = {
+  anon: {
+    id: "d79ab3a212bc0d3c1d4c19aaf06d12ce182fc518c690776363a05c54f57cab65",
+    pubkey: "5495cb8597d0a90e8983d79971b3c528e99c7ce068b991d45375ba03020a63fb",
+    created_at: 1723472557,
+    kind: 0,
+    tags: [],
+    content:
+      '{"displayName":"Anon Zaps","display_name":"Anon Zaps","name":"anonzaps","website":"https://anonzaps.vercel.app","lud16":"bloomer@getalby.com"}',
+    sig: "c2cf92395725d80ee530ffc394fd58417d012bce401c6dc559971443b2dcd54faff96834cfe039deab3aa32ba441022554c9c83176ad1071b58c7fe6311cf039",
+  },
   letthezapsflow: {
     sig: "5c1f5c1f6952e6548d3d957b4081511860add01501702e59c226b148bab438306ab234d3d32de8c51d280a59e0ee832f22bab8ac312502524beecd432a56730f",
     id: "e0f96f8282e8b19fa50eaa6b02dfc0b5fa19183d72ca3d958d71e78615727bd8",
