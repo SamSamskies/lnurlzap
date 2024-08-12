@@ -4,6 +4,7 @@ import { LiveEvent } from "nostr-tools/kinds";
 import type { Event } from "nostr-tools/core";
 import type { Filter } from "nostr-tools/filter";
 import { cacheEvent, getCachedEvent } from "@/utils/cache";
+import { getEventByAlias } from "@/utils/aliases";
 
 export const DEFAULT_RELAYS = [
   "wss://relay.damus.io",
@@ -89,6 +90,12 @@ export const getUserProfileAndRelayListMetadata = (pubkey: string) =>
   });
 
 export const findEvent = async (id: string, relays = DEFAULT_RELAYS) => {
+  const eventWithAlias = getEventByAlias(id);
+
+  if (eventWithAlias) {
+    return eventWithAlias;
+  }
+
   if (is32ByteHex(id)) {
     return findOneFromRelays(relays, {
       ids: [id],
