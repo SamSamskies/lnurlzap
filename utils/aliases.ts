@@ -2,7 +2,7 @@ import { verifyEvent } from "nostr-tools/pure";
 import type { Event } from "nostr-tools/core";
 
 const ALIASES: { [key: string]: Event } = {
-  anon: {
+  anonzaps: {
     id: "d79ab3a212bc0d3c1d4c19aaf06d12ce182fc518c690776363a05c54f57cab65",
     pubkey: "5495cb8597d0a90e8983d79971b3c528e99c7ce068b991d45375ba03020a63fb",
     created_at: 1723472557,
