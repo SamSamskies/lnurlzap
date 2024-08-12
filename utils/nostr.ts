@@ -207,15 +207,15 @@ export const getPubkeyToZap = (event: Event) => {
 };
 
 export const getAddressPointer = (id: string) => {
-  if (id.includes("@")) {
-    return;
+  try {
+    const { type, data } = nip19.decode(id);
+
+    return type === "naddr"
+      ? `${(data as nip19.AddressPointer).kind}:${(data as nip19.AddressPointer).pubkey}:${(data as nip19.AddressPointer).identifier}`
+      : null;
+  } catch {
+    return null;
   }
-
-  const { type, data } = nip19.decode(id);
-
-  return type === "naddr"
-    ? `${(data as nip19.AddressPointer).kind}:${(data as nip19.AddressPointer).pubkey}:${(data as nip19.AddressPointer).identifier}`
-    : null;
 };
 
 export const isRegularEvent = (event: Event) => {
