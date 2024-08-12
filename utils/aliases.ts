@@ -1,6 +1,9 @@
 import { verifyEvent } from "nostr-tools/pure";
 import type { Event } from "nostr-tools/core";
 
+/**
+ * TODO: update aliases to be nip-19 identifiers instead of hardcoded events
+ */
 const ALIASES: { [key: string]: Event } = {
   anonzaps: {
     id: "d79ab3a212bc0d3c1d4c19aaf06d12ce182fc518c690776363a05c54f57cab65",
