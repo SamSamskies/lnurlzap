@@ -90,7 +90,7 @@ export const getUserProfileAndRelayListMetadata = (pubkey: string) =>
   });
 
 export const findEvent = async (id: string, relays = DEFAULT_RELAYS) => {
-  const eventWithAlias = getEventByAlias(id);
+  const eventWithAlias = getEventByAlias(id.split("@")[0]);
 
   if (eventWithAlias) {
     return eventWithAlias;
