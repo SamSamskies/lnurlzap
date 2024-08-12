@@ -207,6 +207,10 @@ export const getPubkeyToZap = (event: Event) => {
 };
 
 export const getAddressPointer = (id: string) => {
+  if (id.includes("@")) {
+    return;
+  }
+
   const { type, data } = nip19.decode(id);
 
   return type === "naddr"
