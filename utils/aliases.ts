@@ -1,6 +1,7 @@
 import { verifyEvent } from "nostr-tools/pure";
+import type { Event } from "nostr-tools/core";
 
-const ALIASES = {
+const ALIASES: { [key: string]: Event } = {
   letthezapsflow: {
     sig: "5c1f5c1f6952e6548d3d957b4081511860add01501702e59c226b148bab438306ab234d3d32de8c51d280a59e0ee832f22bab8ac312502524beecd432a56730f",
     id: "e0f96f8282e8b19fa50eaa6b02dfc0b5fa19183d72ca3d958d71e78615727bd8",
