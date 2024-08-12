@@ -50,7 +50,7 @@ export default async function handler(
 
       return {
         ...rawData,
-        callback: `${process.env.LNURLZAP_BASE_URL}/api/zap/${id}/callback`,
+        callback: `${process.env.NEXT_PUBLIC_LNURLZAP_BASE_URL}/api/zap/${id}/callback`,
       };
     } catch (err) {
       return {
