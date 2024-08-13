@@ -170,7 +170,7 @@ export const validateNostrId = (id: string) => {
   }
 
   try {
-    const { type, data } = nip19.decode(id);
+    const { type } = nip19.decode(id);
 
     switch (type) {
       case "npub":
@@ -224,3 +224,41 @@ export const isRegularEvent = (event: Event) => {
 
 export const truncateId = (id: string) =>
   `${id.substring(0, 12)}...${id.substring(id.length - 12)}`;
+
+export const convertNoteIdToNevent = async (noteId: string) => {
+  const { type, data } = nip19.decode(noteId);
+
+  if (type !== "note") {
+    throw new Error(`${noteId} is not a valie note ID.`);
+  }
+
+  const event = await findEvent(data as string);
+
+  if (!event) {
+    throw new Error(`Could not find author of note with ID ${noteId}`);
+  }
+
+  return nip19.neventEncode({ id: data as string, author: event.pubkey });
+};
+
+export const normalizeId = async (id: string): Promise<string> => {
+  const idWithNoPrefix = id.replace(/^nostr:/, "");
+
+  try {
+    if (is32ByteHex(idWithNoPrefix)) {
+      return convertNoteIdToNevent(nip19.noteEncode(idWithNoPrefix));
+    }
+
+    const { type } = nip19.decode(idWithNoPrefix);
+
+    switch (type) {
+      case "note": {
+        return convertNoteIdToNevent(idWithNoPrefix);
+      }
+      default:
+        return idWithNoPrefix;
+    }
+  } catch {
+    return idWithNoPrefix;
+  }
+};

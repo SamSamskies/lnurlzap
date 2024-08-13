@@ -3,7 +3,15 @@ import { LnurlQrCodePng } from "@/components/LnurlQrCodePng";
 import { encodeLnurl, truncateId } from "@/utils";
 import Head from "next/head";
 
-export const Lnurl = ({ id, error }: { id: string; error: string | null }) => {
+export const Lnurl = ({
+  id,
+  normalizedId,
+  error,
+}: {
+  id: string;
+  normalizedId: string;
+  error: string | null;
+}) => {
   const lnurl = encodeLnurl(id);
   const description = `Use any lightning wallet to zap ${truncateId(id)}`;
   const ogImage = `${process.env.NEXT_PUBLIC_LNURLZAP_BASE_URL}/api/og/${id}`;
@@ -23,7 +31,7 @@ export const Lnurl = ({ id, error }: { id: string; error: string | null }) => {
           <>
             <div className={styles.noteEmbedContainer}>
               <iframe
-                src={`https://njump.me/${id}?embed=yes`}
+                src={`https://njump.me/${normalizedId}?embed=yes`}
                 className="nostr-embedded"
                 style={{
                   width: "100%",
