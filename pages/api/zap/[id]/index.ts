@@ -5,6 +5,7 @@ import {
   findEvent,
   getPubkeyToZap,
   getUserProfile,
+  getNip19Id,
 } from "@/utils";
 
 export default async function handler(
@@ -16,7 +17,7 @@ export default async function handler(
       throw new Error("There must be one and only one id.");
     }
 
-    return id;
+    return getNip19Id(id) ?? id;
   };
   const fetchLnurlServiceParams = async (id: string) => {
     try {

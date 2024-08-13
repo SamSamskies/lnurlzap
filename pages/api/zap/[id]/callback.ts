@@ -6,6 +6,7 @@ import {
   getUserProfileAndRelayListMetadata,
   getPubkeyToZap,
   getAddressPointer,
+  getNip19Id,
 } from "@/utils";
 import * as nip57 from "nostr-tools/nip57";
 import { finalizeEvent, generateSecretKey } from "nostr-tools/pure";
@@ -20,7 +21,7 @@ export default async function handler(
       throw new Error("There must be one and only one id.");
     }
 
-    return id;
+    return getNip19Id(id) ?? id;
   };
   const normalizeAmount = (amount?: string | string[]) => {
     if (!amount || Array.isArray(amount)) {
