@@ -5,7 +5,10 @@ const ALIASES: { [key: string]: string } = {
   notbiebs: "npub1vp8fdcyejd4pqjyrjk9sgz68vuhq7pyvnzk8j0ehlljvwgp8n6eqsrnpsw",
   thezapsmustflow:
     "note1uruklq5zazcelfgw4f4s9h7qkhapjxpawt9rm9vdw8ncv9tj00vq7s0tp0",
-  npc: "naddr1qqjrgvphxycngcek95cxgefh956rxwfn95urwwty95mrgwf3x43kvvpkvvmngqg3waehxw309ahx7um5wgh8w6twv5hsygx0gknt5ymr44ldyyaq0rn3p5jpzkh8y8ymg773a06ytr4wldxz55psgqqqwensuy5xvs",
+
+  // TODO: remove this after 8/26
+  tunestrlivestream:
+    "naddr1qq9rzdejxsmrjwpexgmqyg9e6qkt3lw7kxghq8kqvj8r0mgldta6yclqqc8uqcye5c59r5j7qspsgqqqwenstlvxq0",
 };
 
 export const getNip19Id = (alias: string) => ALIASES[alias];
